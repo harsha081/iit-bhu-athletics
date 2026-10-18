@@ -1,0 +1,455 @@
+/* Events page: top filters + left event list + right athlete details */
+.events-layout-page {
+  min-width: 0;
+}
+
+.events-intro {
+  margin-top: 10px;
+  max-width: 760px;
+}
+
+.events-filter-panel-new {
+  display: grid;
+  grid-template-columns: minmax(240px, 1.1fr) auto auto;
+  align-items: center;
+  gap: 16px;
+  margin: 34px 0 28px;
+}
+
+.events-search-new {
+  width: 100%;
+  max-width: none;
+  min-height: 58px;
+  box-sizing: border-box;
+  border-radius: 13px;
+  padding: 0 18px;
+  background: #0b1533;
+  border-color: #334b80;
+}
+
+.events-search-new input {
+  font-size: 1rem;
+}
+
+.events-filter-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.events-filter-group .event-filter-button {
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: 28px;
+  font-size: 0.98rem;
+  white-space: nowrap;
+}
+
+.events-discipline-filters > svg {
+  color: #cbd5e1;
+  margin-right: 2px;
+}
+
+.events-filter-group .event-filter-button.active {
+  border-color: #2458e8;
+  background: #2458e8;
+  color: #fff;
+}
+
+.events-browser {
+  display: grid;
+  grid-template-columns: minmax(230px, 290px) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
+  min-width: 0;
+}
+
+.events-sidebar,
+.events-detail-panel {
+  min-width: 0;
+  border: 1px solid #203761;
+  border-radius: 16px;
+  background: rgba(9, 19, 46, 0.72);
+  overflow: hidden;
+}
+
+.events-sidebar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 21px 20px 17px;
+  border-bottom: 1px solid #243b66;
+  background: rgba(15, 31, 68, 0.72);
+}
+
+.events-sidebar-heading h2 {
+  margin: 6px 0 0;
+  font-size: 1.25rem;
+}
+
+.events-count {
+  display: inline-flex;
+  min-width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.2);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.events-sidebar-list {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+}
+
+.events-sidebar-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  padding: 15px 13px;
+  text-align: left;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #e6edf9;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.events-sidebar-item:hover {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: #294779;
+}
+
+.events-sidebar-item.selected {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: #3569ed;
+}
+
+.events-sidebar-item-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.events-sidebar-category {
+  color: #8fb9ff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.events-sidebar-item strong {
+  overflow-wrap: anywhere;
+  line-height: 1.35;
+  font-size: 0.94rem;
+}
+
+.events-sidebar-arrow {
+  flex: 0 0 auto;
+  color: #91a7cc;
+  transition: transform 160ms ease;
+}
+
+.events-sidebar-item.selected .events-sidebar-arrow {
+  color: #8fb9ff;
+  transform: translateX(2px);
+}
+
+.events-sidebar-empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 28px 14px;
+  text-align: center;
+  color: #9eafce;
+}
+
+.events-sidebar-empty p {
+  margin: 0;
+}
+
+.events-detail-panel {
+  min-height: 360px;
+}
+
+.events-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 26px 26px 22px;
+  border-bottom: 1px solid #243b66;
+  background: linear-gradient(120deg, rgba(20, 43, 91, 0.8), rgba(9, 19, 46, 0.3));
+}
+
+.events-detail-heading h2 {
+  margin: 8px 0 6px;
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+}
+
+.events-detail-heading p {
+  margin: 0;
+}
+
+.events-detail-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid #294779;
+  border-radius: 24px;
+  color: #b9d2ff;
+  background: rgba(9, 19, 46, 0.6);
+  white-space: nowrap;
+  font-size: 0.88rem;
+}
+
+.events-select-prompt,
+.events-detail-empty,
+.events-detail-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 56px 28px;
+  min-height: 300px;
+  text-align: center;
+}
+
+.events-select-prompt h2,
+.events-detail-empty h3 {
+  margin: 0;
+}
+
+.events-select-prompt p,
+.events-detail-empty p {
+  max-width: 450px;
+  margin: 0;
+  line-height: 1.65;
+}
+
+.events-prompt-icon {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border: 1px solid #294779;
+  border-radius: 18px;
+  color: #8fb9ff;
+  background: rgba(37, 99, 235, 0.14);
+}
+
+.events-detail-empty > svg {
+  color: #8fb9ff;
+}
+
+.events-detail-state {
+  flex-direction: row;
+  min-height: 180px;
+  color: #b9c8e2;
+}
+
+.events-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.events-error {
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.events-athlete-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.events-athlete-table {
+  min-width: 680px;
+}
+
+.events-athlete-table th {
+  padding: 18px 16px;
+  background: #101e43;
+}
+
+.events-athlete-table td {
+  padding: 18px 16px;
+  vertical-align: middle;
+}
+
+.event-athlete-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 175px;
+}
+
+.event-athlete-name strong {
+  color: #f1f5ff;
+  font-weight: 700;
+}
+
+.event-athlete-photo,
+.event-athlete-avatar {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #294779;
+  background: #142750;
+}
+
+.event-athlete-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #c7dcff;
+  font-weight: 700;
+}
+
+.events-best-result {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.events-view-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  white-space: nowrap;
+}
+
+.events-history-row > td {
+  padding: 0 !important;
+  background: rgba(10, 23, 52, 0.9);
+}
+
+.event-athlete-details {
+  padding: 24px;
+}
+
+.event-athlete-details h3 {
+  margin: 0 0 18px;
+}
+
+.events-history-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #263d68;
+  border-radius: 10px;
+}
+
+.events-history-table-wrap .public-results-table {
+  min-width: 640px;
+}
+
+.events-athlete-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 24px;
+  margin-top: 20px;
+  color: #a9bddc;
+  font-size: 0.9rem;
+}
+
+.events-athlete-summary span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.events-athlete-summary svg {
+  color: #8fb9ff;
+}
+
+.events-athlete-summary strong {
+  color: #f1f5ff;
+}
+
+@media (max-width: 1100px) {
+  .events-filter-panel-new {
+    grid-template-columns: minmax(220px, 1fr) auto;
+  }
+
+  .events-discipline-filters {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 760px) {
+  .events-filter-panel-new {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .events-filter-group,
+  .events-discipline-filters {
+    justify-content: flex-start;
+    grid-column: auto;
+  }
+
+  .events-browser {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .events-sidebar-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .events-sidebar-item {
+    align-items: flex-start;
+    padding: 12px 10px;
+  }
+
+  .events-sidebar-arrow {
+    margin-top: 8px;
+  }
+
+  .events-detail-heading {
+    padding: 22px 18px;
+  }
+
+  .events-athlete-table {
+    min-width: 680px;
+  }
+
+  .event-athlete-details {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 440px) {
+  .events-sidebar-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .events-filter-group .event-filter-button {
+    min-height: 44px;
+    padding: 0 13px;
+  }
+}
