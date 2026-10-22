@@ -82,7 +82,43 @@ export default function Events() {
       const response = await fetch(`${API_BASE_URL}/events/${event.id}/athletes`);
       if (!response.ok) throw new Error("Failed to fetch participating athletes.");
       const data = await response.json();
-      setAthletes(Array.isArray(data.athletes) ? data.athletes : []);
+      let eventAthletes = Array.isArray(data.athletes) ? data.athletes : [];
+
+      // Some versions of the event endpoint may omit status. If so, look it up
+      // from the public athletes endpoint so alumni are not mixed with current athletes.
+      const missingStatus = eventAthletes.some((athlete) => {
+        const status = String(athlete.status || "").trim().toLowerCase();
+        return status !== "active" && status !== "alumni";
+      });
+
+      if (missingStatus) {
+        try {
+          const statusResponse = await fetch(`${API_BASE_URL}/athletes`);
+          if (statusResponse.ok) {
+            const allAthletes = await statusResponse.json();
+            if (Array.isArray(allAthletes)) {
+              const statusById = new Map(
+                allAthletes.map((athlete) => [
+                  String(athlete.id ?? athlete.athlete_id),
+                  athlete.status,
+                ])
+              );
+
+              eventAthletes = eventAthletes.map((athlete) => ({
+                ...athlete,
+                status:
+                  athlete.status ||
+                  statusById.get(String(athlete.athlete_id ?? athlete.id)) ||
+                  "Unknown",
+              }));
+            }
+          }
+        } catch (statusError) {
+          console.warn("Could not load athlete statuses:", statusError);
+        }
+      }
+
+      setAthletes(eventAthletes);
     } catch (error) {
       console.error("Error loading event athletes:", error);
       setAthletesError("Unable to load athletes for this event. Please try again.");
@@ -167,6 +203,63 @@ export default function Events() {
     if (/^https?:\/\//i.test(photoUrl)) return photoUrl;
     return `${API_ORIGIN}${photoUrl.startsWith("/") ? "" : "/"}${photoUrl}`;
   }
+
+  // Read the result field used by the table and ignore missing/invalid results.
+  const isFieldEvent = String(selectedEvent?.category || "").trim().toLowerCase() === "field";
+
+  function getNumericBestResult(athlete) {
+    const raw = athlete?.best_result;
+    if (raw === null || raw === undefined || String(raw).trim() === "") return null;
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function compareBestResults(a, b) {
+    const resultA = getNumericBestResult(a);
+    const resultB = getNumericBestResult(b);
+
+    // Results come first; athletes without a recorded result go to the bottom.
+    if (resultA === null && resultB !== null) return 1;
+    if (resultA !== null && resultB === null) return -1;
+    if (resultA === null && resultB === null) {
+      return String(a.athlete_name || "").localeCompare(String(b.athlete_name || ""));
+    }
+
+    // Track: lower is better. Field: higher is better.
+    const resultOrder = isFieldEvent ? resultB - resultA : resultA - resultB;
+    return resultOrder || String(a.athlete_name || "").localeCompare(String(b.athlete_name || ""));
+  }
+
+  // Sort each status group independently so missing results never appear above
+  // athletes with recorded results in that same group.
+  const currentAthletes = athletes
+    .filter((athlete) => String(athlete.status || "").trim().toLowerCase() !== "alumni")
+    .slice()
+    .sort(compareBestResults);
+  const alumniAthletes = athletes
+    .filter((athlete) => String(athlete.status || "").trim().toLowerCase() === "alumni")
+    .slice()
+    .sort(compareBestResults);
+
+  // Overall best result across current athletes AND alumni.
+  const resultsToCompare = athletes
+    .map(getNumericBestResult)
+    .filter((result) => result !== null);
+  const bestResultToDate = resultsToCompare.length === 0
+    ? null
+    : resultsToCompare.reduce(
+        (best, result) => isFieldEvent ? Math.max(best, result) : Math.min(best, result),
+        resultsToCompare[0]
+      );
+
+  const groupedAthletes = [
+    { type: "header", section: "current" },
+    ...currentAthletes.map((athlete) => ({ type: "athlete", athlete, section: "current" })),
+    ...(currentAthletes.length === 0 ? [{ type: "empty", section: "current" }] : []),
+    { type: "header", section: "alumni" },
+    ...alumniAthletes.map((athlete) => ({ type: "athlete", athlete, section: "alumni" })),
+    ...(alumniAthletes.length === 0 ? [{ type: "empty", section: "alumni" }] : []),
+  ];
 
   return (
     <main className="section page-container events-page events-layout-page">
@@ -295,10 +388,26 @@ export default function Events() {
                       {selectedEvent.gender?.toUpperCase() === "M" ? "Male" : "Female"} participants
                     </p>
                   </div>
-                  <span className="events-detail-count">
-                    <Users size={17} />
-                    {loadingAthletes ? "…" : athletes.length} {athletes.length === 1 ? "athlete" : "athletes"}
-                  </span>
+                  <div className="events-detail-stats">
+                    <span className="events-detail-count">
+                      <Users size={17} />
+                      {loadingAthletes ? "…" : athletes.length} {athletes.length === 1 ? "athlete" : "athletes"}
+                    </span>
+                    <div className="events-record-summary" aria-live="polite">
+                      <span className="events-record-label">
+                        <Trophy size={15} aria-hidden="true" />
+                        Best result to date
+                      </span>
+                      <strong>
+                        {loadingAthletes
+                          ? "Loading…"
+                          : bestResultToDate !== null
+                            ? formatResult(bestResultToDate, selectedEvent.category)
+                            : "No result recorded"}
+                      </strong>
+                      <small>Current athletes + alumni</small>
+                    </div>
+                  </div>
                 </div>
 
                 {loadingAthletes && (
@@ -338,8 +447,39 @@ export default function Events() {
                         </tr>
                       </thead>
                       <tbody>
-                        {athletes.map((athlete) => {
-                          const athleteId = athlete.athlete_id;
+                        {groupedAthletes.map((item) => {
+                          const { athlete, section, type } = item;
+
+                          if (type === "header") {
+                            return (
+                              <tr
+                                key={`${section}-group-heading`}
+                                className={`events-athlete-group-row ${section === "alumni" ? "alumni-group" : "current-group"}`}
+                              >
+                                <th colSpan={5} scope="rowgroup">
+                                  <span className="events-group-indicator" aria-hidden="true" />
+                                  <span>{section === "current" ? "Current Athletes" : "Alumni Athletes"}</span>
+                                  <span className="events-group-count">
+                                    {section === "current" ? currentAthletes.length : alumniAthletes.length}
+                                  </span>
+                                </th>
+                              </tr>
+                            );
+                          }
+
+                          if (type === "empty") {
+                            return (
+                              <tr key={`${section}-empty`} className="events-group-empty-row">
+                                <td colSpan={5}>
+                                  {section === "current"
+                                    ? "No current athletes assigned to this event."
+                                    : "No alumni athletes recorded for this event."}
+                                </td>
+                              </tr>
+                            );
+                          }
+
+                          const athleteId = athlete.athlete_id ?? athlete.id;
                           const isExpanded = expandedAthlete === athleteId;
                           const history = Array.isArray(athlete.performance_history)
                             ? athlete.performance_history
@@ -347,7 +487,7 @@ export default function Events() {
 
                           return (
                             <Fragment key={athleteId}>
-                              <tr>
+                              <tr className={section === "alumni" ? "events-alumni-row" : "events-current-row"}>
                                 <td>
                                   <div className="event-athlete-name">
                                     {athlete.photo_url ? (
@@ -371,8 +511,8 @@ export default function Events() {
                                 <td>{athlete.entry_year || "—"}</td>
                                 <td>{athlete.branch || "—"}</td>
                                 <td className="events-best-result">
-                                  {athlete.best_result != null
-                                    ? formatResult(athlete.best_result, selectedEvent.category)
+                                  {getNumericBestResult(athlete) !== null
+                                    ? formatResult(getNumericBestResult(athlete), selectedEvent.category)
                                     : "No result recorded"}
                                 </td>
                                 <td>
@@ -434,7 +574,7 @@ export default function Events() {
                                       )}
 
                                       <div className="events-athlete-summary">
-                                        <span><Trophy size={16} /> Best result: <strong>{athlete.best_result != null ? formatResult(athlete.best_result, selectedEvent.category) : "Not available"}</strong></span>
+                                        <span><Trophy size={16} /> Best result: <strong>{getNumericBestResult(athlete) !== null ? formatResult(getNumericBestResult(athlete), selectedEvent.category) : "Not available"}</strong></span>
                                         <span><CalendarDays size={16} /> Entry year: <strong>{athlete.entry_year || "—"}</strong></span>
                                       </div>
                                     </div>

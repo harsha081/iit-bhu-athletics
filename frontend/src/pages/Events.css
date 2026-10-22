@@ -1,6 +1,10 @@
 /* Events page: top filters + left event list + right athlete details */
 .events-layout-page {
   min-width: 0;
+  width: min(1680px, calc(85% - 40px));
+  max-width: none;
+  margin-inline: auto;
+  box-sizing: border-box;
 }
 
 .events-intro {
@@ -59,10 +63,11 @@
 
 .events-browser {
   display: grid;
-  grid-template-columns: minmax(230px, 290px) minmax(0, 1fr);
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
   gap: 22px;
   align-items: start;
   min-width: 0;
+  width: 100%;
 }
 
 .events-sidebar,
@@ -204,6 +209,15 @@
   margin: 0;
 }
 
+.events-detail-stats {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+  max-width: 100%;
+}
+
 .events-detail-count {
   display: inline-flex;
   align-items: center;
@@ -215,6 +229,40 @@
   background: rgba(9, 19, 46, 0.6);
   white-space: nowrap;
   font-size: 0.88rem;
+}
+
+.events-record-summary {
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+  min-width: 176px;
+  padding: 11px 14px;
+  border: 1px solid rgba(45, 212, 191, 0.35);
+  border-radius: 12px;
+  background: rgba(13, 148, 136, 0.09);
+  text-align: right;
+}
+
+.events-record-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5eead4;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.events-record-summary strong {
+  color: #f0fdfa;
+  font-size: 1.1rem;
+  line-height: 1.35;
+}
+
+.events-record-summary small {
+  color: #a8bddb;
+  font-size: 0.72rem;
 }
 
 .events-select-prompt,
@@ -280,11 +328,15 @@
 
 .events-athlete-table-wrap {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 .events-athlete-table {
-  min-width: 680px;
+  width: 100%;
+  min-width: 860px;
+  table-layout: auto;
 }
 
 .events-athlete-table th {
@@ -295,6 +347,65 @@
 .events-athlete-table td {
   padding: 18px 16px;
   vertical-align: middle;
+}
+
+/* Clearly separate active athletes from alumni within every event. */
+.events-athlete-group-row th {
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  color: #dbeafe;
+  background: #14264d;
+  border-top: 1px solid #294779;
+  border-bottom: 1px solid #294779;
+}
+
+.events-athlete-group-row.alumni-group th {
+  background: #20203f;
+  color: #e0e7ff;
+  border-top-color: #51447b;
+  border-bottom-color: #51447b;
+}
+
+.events-group-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: #34d399;
+}
+
+.events-athlete-group-row.alumni-group .events-group-indicator {
+  background: #a78bfa;
+}
+
+.events-group-count {
+  display: inline-flex;
+  min-width: 24px;
+  height: 24px;
+  margin-left: 10px;
+  padding: 0 7px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.16);
+  color: #dbeafe;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+
+.events-group-empty-row td {
+  padding: 16px 18px;
+  color: #94a9cc;
+  font-size: 0.92rem;
+  background: rgba(8, 18, 43, 0.56);
+}
+
+.events-alumni-row td {
+  background: rgba(35, 30, 65, 0.28);
 }
 
 .event-athlete-name {
@@ -389,7 +500,12 @@
   color: #f1f5ff;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
+  .events-browser {
+    grid-template-columns: minmax(230px, 280px) minmax(0, 1fr);
+    gap: 18px;
+  }
+
   .events-filter-panel-new {
     grid-template-columns: minmax(220px, 1fr) auto;
   }
@@ -401,6 +517,10 @@
 }
 
 @media (max-width: 760px) {
+  .events-layout-page {
+    width: calc(100% - 28px);
+  }
+
   .events-filter-panel-new {
     grid-template-columns: minmax(0, 1fr);
     align-items: stretch;

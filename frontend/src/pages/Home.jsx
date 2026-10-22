@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./Home.css";
 import {
   ArrowRight,
   Trophy,
@@ -15,7 +16,6 @@ import { getAthletes } from "../api/athletes";
 import { getLeadership } from "../api/leadership";
 import { getAnnouncements } from "../api/announcements";
 import { getCoaches } from "../api/coaches";
-import "./Home.css";
 
 export default function Home() {
   const [athletes, setAthletes] = useState([]);
@@ -254,6 +254,92 @@ export default function Home() {
     },
   ];
 
+  // Build an all-time Hall of Fame from medal-winning performance records.
+  // If the medal field is empty, podium positions (1–3) are used as a fallback.
+  const getMedalType = (performance) => {
+    const rawMedal = String(performance.medal || "").trim().toLowerCase();
+
+    if (rawMedal && !["none", "null", "-", "n/a"].includes(rawMedal)) {
+      if (rawMedal.includes("gold") || rawMedal === "g") return "Gold";
+      if (rawMedal.includes("silver") || rawMedal === "s") return "Silver";
+      if (rawMedal.includes("bronze") || rawMedal === "b") return "Bronze";
+      return performance.medal;
+    }
+
+    const position = Number(performance.position);
+    if (position === 1) return "Gold";
+    if (position === 2) return "Silver";
+    if (position === 3) return "Bronze";
+    return null;
+  };
+
+  const hallOfFame = (() => {
+    const medalistsByAthlete = new Map();
+
+    performances.forEach((performance) => {
+      const medalType = getMedalType(performance);
+      if (!medalType) return;
+
+      const athleteName =
+        performance.athlete_name ||
+        performance.name ||
+        performance.athlete?.name;
+
+      if (!athleteName) return;
+
+      const athleteKey = String(
+        performance.athlete_id ?? athleteName
+      ).toLowerCase();
+
+      const matchingAthlete = athletes.find(
+        (athlete) =>
+          String(athlete.id) === String(performance.athlete_id) ||
+          String(athlete.name || "").toLowerCase() ===
+            String(athleteName).toLowerCase()
+      );
+
+      if (!medalistsByAthlete.has(athleteKey)) {
+        medalistsByAthlete.set(athleteKey, {
+          id: athleteKey,
+          name: athleteName,
+          photo_url:
+            performance.athlete_photo_url ||
+            performance.photo_url ||
+            matchingAthlete?.photo_url ||
+            null,
+          gold: 0,
+          silver: 0,
+          bronze: 0,
+          otherMedals: 0,
+          events: new Set(),
+          totalMedals: 0,
+        });
+      }
+
+      const medalist = medalistsByAthlete.get(athleteKey);
+      const normalizedMedal = String(medalType).toLowerCase();
+      if (normalizedMedal === "gold") medalist.gold += 1;
+      else if (normalizedMedal === "silver") medalist.silver += 1;
+      else if (normalizedMedal === "bronze") medalist.bronze += 1;
+      else medalist.otherMedals += 1;
+      medalist.totalMedals += 1;
+
+      const eventName =
+        performance.event_name ||
+        performance.event ||
+        performance.discipline;
+      if (eventName) medalist.events.add(eventName);
+    });
+
+    return Array.from(medalistsByAthlete.values()).sort((a, b) =>
+      b.gold - a.gold ||
+      b.silver - a.silver ||
+      b.bronze - a.bronze ||
+      b.totalMedals - a.totalMedals ||
+      a.name.localeCompare(b.name)
+    );
+  })();
+
   return (
     <main>
       {/* ==============================
@@ -290,8 +376,12 @@ export default function Home() {
         </div>
 
         <div className="hero-decoration">
-          <Trophy size={180} strokeWidth={0.8} />
-          <span>IIT BHU</span>
+          <img
+            className="hero-athletics-logo"
+            src="/athletics-logo.png"
+            alt="IIT (BHU) Varanasi Athletics logo"
+            fetchPriority="high"
+          />
         </div>
       </section>
 
@@ -313,289 +403,229 @@ export default function Home() {
       </section>
 
       {/* ==============================
-          LATEST UPDATES
+          UPDATES SIDEBAR + ATHLETICS COMMUNITY
       ============================== */}
-      <section className="section home-updates">
-        <div className="home-section-heading">
-          <span className="eyebrow">
-            WHAT'S HAPPENING
-          </span>
-
-          <h2>Latest Updates</h2>
-
-          <p>
-            Stay informed about athletics trials, achievements,
-            competition results, and upcoming events.
-          </p>
-        </div>
-
-        {loading ? (
-          <div className="home-updates-empty">
-            <Megaphone size={32} />
-
-            <h3>Loading updates...</h3>
-
-            <p>
-              Please wait while we fetch the latest announcements.
-            </p>
+      <section className="home-community-layout" aria-label="Athletics updates and team">
+        {/* Left sidebar: latest announcements */}
+        <aside className="home-updates-sidebar">
+          <div className="home-sidebar-heading">
+            <span className="eyebrow">WHAT'S HAPPENING</span>
+            <h2>Latest Updates</h2>
+            <p>Trials, results, achievements, and important notices.</p>
+            <span className="home-update-count">
+              {announcements.length} {announcements.length === 1 ? "update" : "updates"}
+            </span>
           </div>
-        ) : announcements.length === 0 ? (
-          <div className="home-updates-empty">
-            <Megaphone size={32} />
 
-            <h3>No updates yet</h3>
-
-            <p>
-              New athletics announcements will appear here.
-            </p>
-          </div>
-        ) : (
-          <div className="home-updates-grid">
-            {announcements.slice(0, 3).map((announcement) => (
-              <article
-                className="home-update-card"
-                key={announcement.id}
-              >
-                {announcement.image_url ? (
-                  <img
-                    className="home-update-image"
-                    src={announcement.image_url}
-                    alt={announcement.title}
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="home-update-image-placeholder">
-                    <Trophy
-                      size={38}
-                      strokeWidth={1.2}
-                    />
-                  </div>
-                )}
-
-                <div className="home-update-content">
-                  <div className="home-update-meta">
+          {loading ? (
+            <div className="home-sidebar-state">
+              <Megaphone size={25} />
+              <h3>Loading updates...</h3>
+              <p>Please wait while we fetch the latest announcements.</p>
+            </div>
+          ) : announcements.length === 0 ? (
+            <div className="home-sidebar-state">
+              <Megaphone size={25} />
+              <h3>No updates yet</h3>
+              <p>New athletics announcements will appear here.</p>
+            </div>
+          ) : (
+            <div className="home-update-list">
+              {announcements.slice(0, 5).map((announcement) => (
+                <article className="home-update-row" key={announcement.id}>
+                  <div className="home-update-row-meta">
                     <span className="home-update-category">
                       {announcement.category || "General"}
                     </span>
-
                     {announcement.is_pinned && (
-                      <span className="home-update-pinned">
-                        📌 Pinned
-                      </span>
+                      <span className="home-update-pinned">📌 Pinned</span>
                     )}
                   </div>
 
                   <h3>{announcement.title}</h3>
-
                   <p>
-                    {announcement.content ||
-                      "Read the latest athletics update."}
+                    {announcement.content || "Read the latest athletics update."}
                   </p>
+                  <div className="home-update-row-footer">
+                    <span>
+                      {announcement.published_at || announcement.publish_at
+                        ? new Date(
+                            announcement.published_at || announcement.publish_at
+                          ).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : ""}
+                    </span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
 
-                  <span className="home-update-date">
-                    {announcement.published_at
-                      ? new Date(
-                          announcement.published_at
-                        ).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })
-                      : ""}
-                  </span>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-
-        <div className="home-updates-action">
-          <Link to="/updates" className="primary-button">
-            View Latest Updates <ArrowRight size={18} />
+          <Link to="/updates" className="home-sidebar-link">
+            All updates <ArrowRight size={16} />
           </Link>
-        </div>
-      </section>
+        </aside>
 
-      {/* ==============================
-          CURRENT LEADERSHIP
-      ============================== */}
-      <section className="section home-leadership">
-        <div className="home-section-heading">
-          <span className="eyebrow">
-            THE TEAM BEHIND THE TEAM
-          </span>
+        {/* Right column: leadership, coaches, then all-time medalists */}
+        <div className="home-community-main">
+          <section className="home-community-panel home-leadership-panel">
+            <div className="home-panel-heading">
+              <div>
+                <span className="eyebrow">THE TEAM BEHIND THE TEAM</span>
+                <h2>Captains & Vice-Captains</h2>
+                <p>Meet the student leaders representing men's and women's athletics.</p>
+              </div>
+              <Link to="/admin/login" className="home-panel-link">
+                Manage <ArrowRight size={15} />
+              </Link>
+            </div>
 
-          <h2>Current Leadership</h2>
+            {loading ? (
+              <p className="home-community-loading">Loading leadership...</p>
+            ) : (
+              <div className="home-leadership-compact-grid">
+                {leadershipCards.map(({ position, gender, label }) => {
+                  const leader = getLeader(position, gender);
 
-          <p>
-            Meet the captains leading IIT BHU Athletics on and
-            off the field.
-          </p>
-        </div>
+                  return (
+                    <article
+                      className="home-leader-compact-card"
+                      key={`${position}-${gender}`}
+                    >
+                      <div className="home-leader-compact-photo">
+                        {leader?.photo_url ? (
+                          <img src={leader.photo_url} alt={getLeaderName(leader)} loading="lazy" />
+                        ) : (
+                          <UserRound size={30} strokeWidth={1.2} />
+                        )}
+                      </div>
+                      <div className="home-leader-compact-info">
+                        <span className="home-leader-label">
+                          <Crown size={14} /> {label}
+                        </span>
+                        <h3>{getLeaderName(leader)}</h3>
+                        {leader ? (
+                          <p>
+                            {leader.branch || "IIT (BHU) Varanasi"}
+                            {leader.entry_year ? ` · ${leader.entry_year}` : ""}
+                          </p>
+                        ) : (
+                          <p>Details will be updated soon.</p>
+                        )}
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </section>
 
-        {loading ? (
-          <p className="home-loading">
-            Loading leadership...
-          </p>
-        ) : (
-          <div className="home-leadership-grid">
-            {leadershipCards.map(
-              ({ position, gender, label }) => {
-                const leader = getLeader(position, gender);
+          <section className="home-community-panel home-coaches-panel">
+            <div className="home-panel-heading">
+              <div>
+                <span className="eyebrow">GUIDANCE · EXPERIENCE · EXCELLENCE</span>
+                <h2>Our Coaches</h2>
+                <p>The coaching team supporting IIT BHU athletes.</p>
+              </div>
+              <Link to="/coaches" className="home-panel-link">
+                All coaches <ArrowRight size={15} />
+              </Link>
+            </div>
 
-                return (
-                  <article
-                    className="home-leader-card"
-                    key={`${position}-${gender}`}
-                  >
-                    <div className="home-leader-photo">
-                      {leader?.photo_url ? (
-                        <img
-                          src={leader.photo_url}
-                          alt={getLeaderName(leader)}
-                        />
+            {loading ? (
+              <p className="home-community-loading">Loading coaches...</p>
+            ) : coaches.length === 0 ? (
+              <div className="home-community-empty">
+                <GraduationCap size={28} />
+                <div>
+                  <h3>Coach profiles coming soon</h3>
+                  <p>Our coaching team details will be updated here.</p>
+                </div>
+              </div>
+            ) : (
+              <div className="home-coaches-compact-grid">
+                {coaches.slice(0, 3).map((coach) => (
+                  <article className="home-coach-compact-card" key={coach.id}>
+                    <div className="home-coach-compact-photo">
+                      {coach.photo_url ? (
+                        <img src={coach.photo_url} alt={coach.name} loading="lazy" />
                       ) : (
-                        <UserRound
-                          size={44}
-                          strokeWidth={1.2}
-                        />
+                        <UserRound size={30} strokeWidth={1.2} />
                       )}
                     </div>
-
-                    <div className="home-leader-info">
-                      <span className="home-leader-label">
-                        <Crown size={15} />
-                        {label}
+                    <div className="home-coach-compact-info">
+                      <span className="home-coach-badge">
+                        <GraduationCap size={14} /> Coach
                       </span>
-
-                      <h3>{getLeaderName(leader)}</h3>
-
-                      {leader ? (
-                        <>
-                          <p>
-                            {leader.branch ||
-                              "IIT (BHU) Varanasi"}
-
-                            {leader.entry_year
-                              ? ` · ${leader.entry_year}`
-                              : ""}
-                          </p>
-
-                          {leader.start_year && (
-                            <span className="home-leader-term">
-                              Since {leader.start_year}
-                            </span>
-                          )}
-                        </>
-                      ) : (
-                        <p>
-                          Leadership details will be updated soon.
-                        </p>
-                      )}
+                      <h3>{coach.name}</h3>
+                      <p>{coach.role || "Athletics Coach"}</p>
                     </div>
                   </article>
-                );
-              }
+                ))}
+              </div>
             )}
-          </div>
-        )}
+          </section>
 
-        <div className="home-leadership-action">
-          <Link to="/admin/login" className="text-link">
-            Manage Leadership <ArrowRight size={18} />
-          </Link>
-        </div>
-      </section>
+          <section className="home-community-panel home-hall-of-fame-panel">
+            <div className="home-panel-heading">
+              <div>
+                <span className="eyebrow">EXCELLENCE THROUGH THE YEARS</span>
+                <h2>Hall of Fame</h2>
+                <p>Medal-winning performances by current athletes and alumni.</p>
+              </div>
+              <span className="home-hall-count">
+                <Medal size={16} /> {hallOfFame.length} {hallOfFame.length === 1 ? "medalist" : "medalists"}
+              </span>
+            </div>
 
-      {/* ==============================
-          CURRENT COACHES
-      ============================== */}
-      <section className="section home-coaches">
-        <div className="home-section-heading">
-          <span className="eyebrow">
-            GUIDANCE · EXPERIENCE · EXCELLENCE
-          </span>
-
-          <h2>Our Coaches</h2>
-
-          <p>
-            Meet the coaches guiding and developing the athletes
-            of IIT BHU Athletics.
-          </p>
-        </div>
-
-        {loading ? (
-          <div className="home-coaches-empty">
-            <GraduationCap size={36} />
-
-            <h3>Loading coaches...</h3>
-
-            <p>
-              Please wait while we fetch the coaching team.
-            </p>
-          </div>
-        ) : coaches.length === 0 ? (
-          <div className="home-coaches-empty">
-            <GraduationCap
-              size={36}
-              strokeWidth={1.2}
-            />
-
-            <h3>Coach profiles coming soon</h3>
-
-            <p>
-              Our coaching team details will be updated here.
-            </p>
-          </div>
-        ) : (
-          <div className="home-coaches-grid">
-            {coaches.slice(0, 3).map((coach) => (
-              <article
-                className="home-coach-card"
-                key={coach.id}
-              >
-                <div className="home-coach-photo">
-                  {coach.photo_url ? (
-                    <img
-                      src={coach.photo_url}
-                      alt={coach.name}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <UserRound
-                      size={46}
-                      strokeWidth={1.2}
-                    />
-                  )}
+            {loading ? (
+              <p className="home-community-loading">Loading medalists...</p>
+            ) : hallOfFame.length === 0 ? (
+              <div className="home-community-empty">
+                <Trophy size={28} />
+                <div>
+                  <h3>Champions will be celebrated here</h3>
+                  <p>Medal-winning performance records will appear once recorded.</p>
                 </div>
-
-                <div className="home-coach-info">
-                  <span className="home-coach-badge">
-                    <GraduationCap size={15} />
-                    Coach
-                  </span>
-
-                  <h3>{coach.name}</h3>
-
-                  <p className="home-coach-role">
-                    {coach.role || "Athletics Coach"}
-                  </p>
-
-                  {coach.contact && (
-                    <p className="home-coach-contact">
-                      {coach.contact}
-                    </p>
-                  )}
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-
-        <div className="home-coaches-action">
-          <Link to="/coaches" className="text-link">
-            Meet All Coaches <ArrowRight size={18} />
-          </Link>
+              </div>
+            ) : (
+              <div className="home-hall-of-fame-grid">
+                {hallOfFame.slice(0, 6).map((medalist, index) => (
+                  <article className="home-medalist-card" key={medalist.id}>
+                    <span className="home-medalist-rank">{String(index + 1).padStart(2, "0")}</span>
+                    <div className="home-medalist-photo">
+                      {medalist.photo_url ? (
+                        <img src={medalist.photo_url} alt={medalist.name} loading="lazy" />
+                      ) : (
+                        <span>{medalist.name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</span>
+                      )}
+                    </div>
+                    <div className="home-medalist-info">
+                      <h3>{medalist.name}</h3>
+                      <div className="home-medal-counts">
+                        {medalist.gold > 0 && <span className="medal-gold">🥇 {medalist.gold}</span>}
+                        {medalist.silver > 0 && <span className="medal-silver">🥈 {medalist.silver}</span>}
+                        {medalist.bronze > 0 && <span className="medal-bronze">🥉 {medalist.bronze}</span>}
+                        {medalist.otherMedals > 0 && <span className="medal-other">🏅 {medalist.otherMedals}</span>}
+                      </div>
+                      <p className="home-medalist-events">
+                        {Array.from(medalist.events).slice(0, 2).join(" · ") || "Athletics medalist"}
+                      </p>
+                      <span className="home-medalist-total">
+                        {medalist.totalMedals} {medalist.totalMedals === 1 ? "medal" : "medals"} recorded
+                      </span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+            <Link to="/events" className="home-hall-of-fame-link">
+              Explore event records <ArrowRight size={16} />
+            </Link>
+          </section>
         </div>
       </section>
 

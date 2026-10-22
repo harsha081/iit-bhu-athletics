@@ -66,18 +66,39 @@
 }
 
 .hero-decoration {
-  min-width: 220px;
-  color: #38e8ff;
-  opacity: 0.6;
+  flex: 0 0 clamp(200px, 22vw, 270px);
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 15px;
+  justify-content: center;
+  opacity: 1;
 }
 
-.hero-decoration span {
-  font-size: 14px;
-  letter-spacing: 7px;
+.hero-athletics-logo {
+  display: block;
+  width: 100%;
+  max-width: 270px;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.22));
+  animation: hero-logo-enter 700ms ease-out both;
+}
+
+@keyframes hero-logo-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-athletics-logo {
+    animation: none;
+  }
 }
 
 
@@ -589,8 +610,534 @@
 
 
 /* Responsive home layout */
+@media (max-width: 900px) {
+  .hero-decoration {
+    flex-basis: clamp(170px, 24vw, 220px);
+  }
+
+  .hero-athletics-logo {
+    max-width: 220px;
+  }
+}
+
 @media (max-width: 700px) {
   .hero { padding: 55px 24px; min-height: 420px; }
   .hero-decoration { display: none; }
   .stats { grid-template-columns: 1fr; }
+}
+
+
+/* =========================================
+   HOME PAGE — UPDATES SIDEBAR + TEAM HUB
+   Scoped to this layout to avoid styling other pages.
+========================================= */
+
+.home-community-layout {
+  width: min(1440px, calc(100% - 48px));
+  margin: 34px auto 64px;
+  display: grid;
+  grid-template-columns: minmax(250px, 0.78fr) minmax(0, 2fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.home-updates-sidebar,
+.home-community-panel {
+  min-width: 0;
+  border: 1px solid #1f3a72;
+  border-radius: 18px;
+  background: linear-gradient(155deg, rgba(15, 31, 74, 0.96), rgba(7, 17, 43, 0.98));
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.16);
+}
+
+.home-updates-sidebar {
+  position: sticky;
+  top: 22px;
+  max-height: calc(100vh - 44px);
+  padding: 24px 20px 20px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #31528b transparent;
+}
+
+.home-sidebar-heading {
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(117, 153, 213, 0.18);
+}
+
+.home-sidebar-heading h2,
+.home-panel-heading h2 {
+  margin: 9px 0 8px;
+  color: #f4f7ff;
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+}
+
+.home-sidebar-heading p,
+.home-panel-heading p {
+  margin: 0;
+  color: #a9bbd8;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.home-update-count,
+.home-hall-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 6px 10px;
+  border: 1px solid rgba(56, 232, 255, 0.22);
+  border-radius: 999px;
+  color: #8df4ff;
+  background: rgba(56, 232, 255, 0.07);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.home-update-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-update-row {
+  min-width: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(117, 153, 213, 0.16);
+}
+
+.home-update-row:last-child {
+  border-bottom: 0;
+}
+
+.home-update-row-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.home-update-row .home-update-category,
+.home-update-row .home-update-pinned {
+  padding: 5px 7px;
+  font-size: 0.64rem;
+}
+
+.home-update-row h3 {
+  margin: 0 0 8px;
+  color: #eef4ff;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.home-update-row > p {
+  margin: 0;
+  color: #9eafd0;
+  font-size: 0.79rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
+}
+
+.home-update-row-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 11px;
+  color: #7f94bb;
+  font-size: 0.7rem;
+}
+
+.home-sidebar-link,
+.home-panel-link,
+.home-hall-of-fame-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #55e8ff;
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-decoration: none;
+  transition: color 160ms ease, gap 160ms ease;
+}
+
+.home-sidebar-link {
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(56, 232, 255, 0.24);
+  border-radius: 10px;
+  background: rgba(56, 232, 255, 0.055);
+}
+
+.home-sidebar-link:hover,
+.home-panel-link:hover,
+.home-hall-of-fame-link:hover {
+  gap: 11px;
+  color: #ffffff;
+}
+
+.home-sidebar-state,
+.home-community-empty {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 22px 0;
+  color: #56e8ff;
+}
+
+.home-sidebar-state {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.home-sidebar-state h3,
+.home-community-empty h3 {
+  margin: 0;
+  color: #f2f6ff;
+  font-size: 0.95rem;
+}
+
+.home-sidebar-state p,
+.home-community-empty p {
+  margin: 0;
+  color: #9eafd0;
+  font-size: 0.8rem;
+  line-height: 1.65;
+}
+
+.home-community-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.home-community-panel {
+  padding: 24px;
+}
+
+.home-panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+
+.home-panel-heading > div {
+  min-width: 0;
+}
+
+.home-panel-heading .eyebrow,
+.home-sidebar-heading .eyebrow {
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+}
+
+.home-panel-link {
+  flex: 0 0 auto;
+  margin-top: 24px;
+  white-space: nowrap;
+}
+
+.home-community-loading {
+  margin: 18px 0 4px;
+  color: #9eafd0;
+  font-size: 0.88rem;
+}
+
+.home-leadership-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.home-leader-compact-card {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 13px;
+  padding: 13px;
+  border: 1px solid rgba(74, 112, 180, 0.3);
+  border-radius: 13px;
+  background: rgba(10, 24, 57, 0.72);
+  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.home-leader-compact-card:hover,
+.home-coach-compact-card:hover,
+.home-medalist-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 232, 255, 0.65);
+  background: rgba(16, 37, 81, 0.92);
+}
+
+.home-leader-compact-photo,
+.home-coach-compact-photo {
+  display: grid;
+  place-items: center;
+  flex: 0 0 66px;
+  width: 66px;
+  height: 66px;
+  overflow: hidden;
+  border: 1px solid rgba(87, 132, 207, 0.55);
+  border-radius: 13px;
+  background: linear-gradient(145deg, #183b83, #0b1b43);
+  color: #62efff;
+}
+
+.home-leader-compact-photo img,
+.home-coach-compact-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-leader-compact-info,
+.home-coach-compact-info,
+.home-medalist-info {
+  min-width: 0;
+}
+
+.home-leader-compact-info .home-leader-label {
+  gap: 5px;
+  font-size: 0.65rem;
+}
+
+.home-leader-compact-info h3,
+.home-coach-compact-info h3,
+.home-medalist-info h3 {
+  margin: 7px 0 5px;
+  color: #f4f7ff;
+  font-size: 0.96rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.home-leader-compact-info p,
+.home-coach-compact-info > p {
+  margin: 0;
+  color: #9eafd0;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.home-coaches-compact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.home-coach-compact-card {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid rgba(74, 112, 180, 0.3);
+  border-radius: 13px;
+  background: rgba(10, 24, 57, 0.72);
+  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.home-coach-compact-photo {
+  flex-basis: 58px;
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+}
+
+.home-coach-compact-info .home-coach-badge {
+  margin: 0;
+  padding: 4px 6px;
+  font-size: 0.59rem;
+}
+
+.home-coach-compact-info h3 {
+  margin: 6px 0 4px;
+  font-size: 0.9rem;
+}
+
+.home-coach-compact-info > p {
+  font-size: 0.72rem;
+}
+
+.home-community-empty {
+  align-items: center;
+  padding: 22px;
+  border: 1px dashed rgba(93, 130, 194, 0.35);
+  border-radius: 13px;
+  background: rgba(8, 20, 49, 0.45);
+}
+
+.home-community-empty > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.home-hall-count {
+  flex: 0 0 auto;
+  margin-top: 20px;
+}
+
+.home-hall-of-fame-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.home-medalist-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 13px;
+  padding: 15px 14px 15px 18px;
+  border: 1px solid rgba(74, 112, 180, 0.3);
+  border-radius: 13px;
+  background: rgba(10, 24, 57, 0.72);
+  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+}
+
+.home-medalist-rank {
+  position: absolute;
+  top: 9px;
+  right: 11px;
+  color: #718ab7;
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.home-medalist-photo {
+  display: grid;
+  place-items: center;
+  flex: 0 0 58px;
+  width: 58px;
+  height: 58px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 205, 90, 0.35);
+  border-radius: 50%;
+  color: #ffe7a3;
+  background: radial-gradient(circle at 30% 25%, #5b4d2b, #15203f 72%);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.home-medalist-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-medalist-info h3 {
+  margin-top: 0;
+  padding-right: 15px;
+}
+
+.home-medal-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 7px 0;
+}
+
+.home-medal-counts span {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 0.69rem;
+  font-weight: 750;
+}
+
+.home-medal-counts .medal-gold { color: #ffe6a1; background: rgba(244, 190, 59, 0.12); }
+.home-medal-counts .medal-silver { color: #e3eaf7; background: rgba(176, 196, 222, 0.13); }
+.home-medal-counts .medal-bronze { color: #f0ba91; background: rgba(205, 127, 72, 0.13); }
+.home-medal-counts .medal-other { color: #a5f3fc; background: rgba(34, 211, 238, 0.1); }
+
+.home-medalist-events {
+  margin: 0;
+  color: #9eafd0;
+  font-size: 0.73rem;
+  line-height: 1.5;
+}
+
+.home-medalist-total {
+  display: inline-block;
+  margin-top: 6px;
+  color: #6fdff5;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.home-hall-of-fame-link {
+  margin-top: 18px;
+}
+
+@media (max-width: 1050px) {
+  .home-community-layout {
+    grid-template-columns: minmax(230px, 0.72fr) minmax(0, 1.6fr);
+    gap: 16px;
+  }
+
+  .home-community-panel { padding: 20px; }
+  .home-leader-compact-card { align-items: flex-start; padding: 11px; }
+  .home-leader-compact-photo { flex-basis: 54px; width: 54px; height: 54px; }
+  .home-coaches-compact-grid { grid-template-columns: 1fr; }
+  .home-coach-compact-card { padding: 10px 12px; }
+}
+
+@media (max-width: 760px) {
+  .home-community-layout {
+    width: calc(100% - 32px);
+    margin-top: 28px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-updates-sidebar {
+    position: static;
+    max-height: none;
+    padding: 22px 18px 18px;
+  }
+
+  .home-update-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+  .home-update-row { padding: 16px 0; }
+  .home-community-panel { padding: 20px 18px; }
+  .home-coaches-compact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .home-community-layout { width: calc(100% - 24px); gap: 14px; }
+  .home-update-list,
+  .home-leadership-compact-grid,
+  .home-coaches-compact-grid,
+  .home-hall-of-fame-grid { grid-template-columns: minmax(0, 1fr); }
+  .home-panel-heading { flex-direction: column; gap: 8px; }
+  .home-panel-link,
+  .home-hall-count { margin-top: 0; }
+  .home-leader-compact-card { align-items: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-leader-compact-card,
+  .home-coach-compact-card,
+  .home-medalist-card,
+  .home-sidebar-link,
+  .home-panel-link,
+  .home-hall-of-fame-link { transition: none; }
 }
