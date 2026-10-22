@@ -1,0 +1,39 @@
+/* =========================================
+   ADD ATHLETE FORM
+========================================= */
+
+.athlete-form {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 28px;
+  background: #0a1438;
+  border: 1px solid #1f3a8a;
+  border-radius: 16px;
+}
+
+.athlete-form label {
+  display: block;
+  margin: 18px 0 8px;
+  color: #a9b8dc;
+  font-size: 14px;
+}
+
+.athlete-form input,
+.athlete-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #31539b;
+  border-radius: 9px;
+  background: #050b1f;
+  color: white;
+}
+
+.athlete-form input:focus,
+.athlete-form select:focus {
+  outline: 1px solid #38e8ff;
+}
+
+.athlete-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

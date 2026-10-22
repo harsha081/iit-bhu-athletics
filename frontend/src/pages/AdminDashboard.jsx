@@ -4,6 +4,7 @@ import {
   getAthletes,
   deleteAthlete,
 } from "../api/athletes";
+import "./AdminDashboard.css";
 
 import {
   Users,

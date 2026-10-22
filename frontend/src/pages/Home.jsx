@@ -15,6 +15,7 @@ import { getAthletes } from "../api/athletes";
 import { getLeadership } from "../api/leadership";
 import { getAnnouncements } from "../api/announcements";
 import { getCoaches } from "../api/coaches";
+import "./Home.css";
 
 export default function Home() {
   const [athletes, setAthletes] = useState([]);

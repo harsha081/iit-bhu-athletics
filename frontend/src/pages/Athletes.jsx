@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AthleteCard from "../components/AthleteCard";
 import { getAthletes } from "../api/athletes";
+import "./athletes.css";
 
 export default function Athletes() {
   const [athletes, setAthletes] = useState([]);

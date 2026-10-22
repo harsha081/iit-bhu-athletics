@@ -6,6 +6,7 @@ import {
   updateAthlete,
 } from "../api/athletes";
 import { ArrowLeft, Save } from "lucide-react";
+import "./AddAthlete.css";
 
 const initialForm = {
   name: "",

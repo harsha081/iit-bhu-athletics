@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import AthleteCard from "../components/AthleteCard";
 import { getAthletes } from "../api/athletes";
+import "./Alumni.css";
+
 
 export default function Alumni() {
   const [athletes, setAthletes] = useState([]);
@@ -44,7 +46,7 @@ export default function Alumni() {
       )}
 
       {!loading && !error && athletes.length > 0 && (
-        <div className="athlete-grid">
+        <div className="alumni-grid">
           {athletes.map((athlete) => (
             <AthleteCard key={athlete.id} athlete={athlete} />
           ))}

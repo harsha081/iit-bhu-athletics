@@ -1,0 +1,32 @@
+/* =========================================
+   ATHLETES PAGE
+========================================= */
+
+.athlete-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+  align-items: stretch;
+  margin-top: 28px;
+}
+
+.athlete-grid > * {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+  .athlete-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 600px) {
+  .athlete-grid {
+    grid-template-columns: 1fr;
+  }
+}
