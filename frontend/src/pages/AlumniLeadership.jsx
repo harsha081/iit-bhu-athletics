@@ -3,15 +3,15 @@ import {
   ArrowDownUp,
   CalendarDays,
   Crown,
-  ShieldCheck,
   UserRound,
   Users,
 } from "lucide-react";
 
 import { getLeadership } from "../api/leadership";
+import { getMediaUrl } from "../utils/mediaUrl";
 
 const genderOptions = [
-  { label: "All Genders", value: "All" },
+  { label: "All", value: "All" },
   { label: "Male", value: "M" },
   { label: "Female", value: "F" },
 ];
@@ -221,38 +221,6 @@ export default function AlumniLeadership() {
   return (
     <main className="alumni-leadership-page">
       {/* Hero */}
-      <section className="alumni-leadership-hero">
-        <div className="alumni-leadership-hero-content">
-          <span className="eyebrow">
-            IIT (BHU) VARANASI · ATHLETICS
-          </span>
-
-          <h1>
-            Our Legacy.
-            <br />
-            <span>Our Leaders.</span>
-          </h1>
-
-          <p>
-            Celebrating the former captains and vice-captains
-            who led IIT BHU Athletics with dedication,
-            discipline, and team spirit.
-          </p>
-
-          <div className="alumni-leadership-hero-stat">
-            <Crown size={22} />
-
-            <div>
-              <strong>{alumniLeaders.length}</strong>
-              <span>Former Leaders</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="alumni-leadership-hero-icon">
-          <ShieldCheck size={150} strokeWidth={0.8} />
-        </div>
-      </section>
 
       {/* Alumni Leaders */}
       <section className="section alumni-leadership-content">
@@ -391,7 +359,7 @@ export default function AlumniLeadership() {
                     <div className="alumni-leader-photo">
                       {leader.photo_url ? (
                         <img
-                          src={leader.photo_url}
+                          src={getMediaUrl(leader.photo_url)}
                           alt={getLeaderName(leader)}
                           loading="lazy"
                         />

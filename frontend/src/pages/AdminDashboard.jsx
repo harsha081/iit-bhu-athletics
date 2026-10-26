@@ -17,6 +17,7 @@ import {
   RefreshCw,
   LogOut,
   Megaphone,
+  Timer,
 } from "lucide-react";
 
 export default function AdminDashboard() {
@@ -228,6 +229,23 @@ useEffect(() => {
               <p className="muted">
                 Create announcements, publish results, share trials updates,
                 and manage athletics news.
+              </p>
+            </div>
+
+            <ArrowRight size={20} />
+          </Link>
+          <Link
+            to="/admin/mission-countdown"
+            className="management-module-card"
+          >
+            <div className="management-module-icon">
+              <Timer size={26} />
+            </div>
+
+            <div>
+              <h3>Next Mission Countdown</h3>
+              <p className="muted">
+                Set the event and live countdown shown beneath the Home page logo.
               </p>
             </div>
 

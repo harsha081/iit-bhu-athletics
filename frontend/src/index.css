@@ -82,6 +82,42 @@ input {
   color: #38e8ff;
 }
 
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.instagram-link {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid #31539b;
+  border-radius: 10px;
+  color: #38e8ff;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.instagram-link:hover {
+  border-color: #38e8ff;
+  background: rgba(56, 232, 255, 0.12);
+  transform: translateY(-1px);
+}
+
+.instagram-link svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+
+.instagram-link .instagram-dot {
+  fill: currentColor;
+  stroke: none;
+}
+
 .hero {
   max-width: 1400px;
   min-height: 490px;
@@ -359,6 +395,10 @@ input {
     order: 3;
     width: 100%;
     justify-content: center;
+  }
+
+  .navbar-actions {
+    order: 2;
   }
 
   .hero {
@@ -1556,7 +1596,7 @@ input {
 ========================================= */
 
 .coaches-hero {
-  padding: 75px 24px 60px;
+  padding: 50px 24px 38px;
   text-align: center;
   background: radial-gradient(
     ellipse at top,
@@ -1566,8 +1606,8 @@ input {
 }
 
 .coaches-hero h1 {
-  margin: 18px 0;
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  margin: 14px 0;
+  font-size: clamp(2.1rem, 5vw, 3.4rem);
   font-weight: 900;
   letter-spacing: -2px;
 }
@@ -1587,17 +1627,17 @@ input {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 40px;
+  gap: 16px;
+  margin-top: 26px;
 }
 
 .coaches-hero-stats > div {
-  min-width: 180px;
+  min-width: 145px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 22px 30px;
+  gap: 6px;
+  padding: 15px 20px;
   border: 1px solid #1f3a8a;
   border-radius: 14px;
   background: rgba(10, 20, 48, 0.8);
@@ -1608,17 +1648,17 @@ input {
 }
 
 .coaches-hero-stats strong {
-  font-size: 2rem;
+  font-size: 1.55rem;
   color: #ffffff;
 }
 
 .coaches-hero-stats span {
   color: #a9b8dc;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .coaches-content {
-  max-width: 1400px;
+  max-width: 1100px;
 }
 
 .coaches-heading {
@@ -1681,7 +1721,7 @@ input {
 
 .public-coach-photo {
   position: relative;
-  height: 230px;
+  height: 140px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1698,11 +1738,11 @@ input {
 
 .public-coach-status {
   position: absolute;
-  top: 14px;
-  right: 14px;
-  padding: 6px 10px;
+  top: 9px;
+  right: 9px;
+  padding: 5px 8px;
   border-radius: 20px;
-  font-size: 0.75rem;
+  font-size: 0.66rem;
   font-weight: 700;
 }
 
@@ -1717,7 +1757,7 @@ input {
 }
 
 .public-coach-info {
-  padding: 20px;
+  padding: 15px;
 }
 
 .public-coach-role {
@@ -1725,28 +1765,28 @@ input {
   align-items: center;
   gap: 7px;
   color: #38e8ff;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   font-weight: 600;
 }
 
 .public-coach-info h3 {
-  margin: 14px 0;
+  margin: 9px 0;
   color: #ffffff;
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   overflow-wrap: anywhere;
 }
 
 .public-coach-divider {
   height: 1px;
-  margin: 16px 0;
+  margin: 11px 0;
   background: #1f3a8a;
 }
 
 .public-coach-info p {
   margin: 0;
   color: #a9b8dc;
-  font-size: 0.9rem;
-  line-height: 1.7;
+  font-size: 0.8rem;
+  line-height: 1.55;
 }
 
 .coaches-message {
@@ -1799,7 +1839,7 @@ input {
 
 @media (max-width: 600px) {
   .coaches-hero {
-    padding: 55px 20px 40px;
+    padding: 42px 20px 32px;
   }
 
   .coaches-hero-stats {
@@ -1822,7 +1862,7 @@ input {
   }
 
   .public-coach-photo {
-    height: 260px;
+    height: 140px;
   }
 
   .coaches-filters {
@@ -3349,7 +3389,7 @@ input {
 }
 
 .alumni-leadership-content {
-  max-width: 1400px;
+  max-width: 1100px;
   margin: 0 auto;
   padding-top: 70px;
   padding-bottom: 90px;
@@ -3358,7 +3398,7 @@ input {
 .alumni-leadership-filters {
   display: flex;
   flex-wrap: wrap;
-  align-items: end;
+  align-items: start;
   gap: 18px;
   margin: 36px 0 30px;
   padding: 22px;
@@ -3434,19 +3474,15 @@ input {
 
 .alumni-leadership-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
 }
 
 .alumni-leader-card {
   overflow: hidden;
-  background: linear-gradient(
-    145deg,
-    rgba(22, 38, 76, 0.95),
-    rgba(10, 18, 40, 0.98)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 17px;
+  background: linear-gradient(145deg, #0f1f4a, #0a1430);
+  border: 1px solid #1f3a8a;
+  border-radius: 16px;
   transition:
     transform 0.25s ease,
     border-color 0.25s ease,
@@ -3464,7 +3500,7 @@ input {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 260px;
+  height: 140px;
   overflow: hidden;
   color: #2de2ff;
   background:
@@ -3485,55 +3521,55 @@ input {
 
 .alumni-leader-rank {
   position: absolute;
-  left: 14px;
-  bottom: 14px;
+  left: 10px;
+  bottom: 10px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 9px 12px;
+  padding: 6px 8px;
   color: #2de2ff;
   background: rgba(5, 12, 30, 0.92);
   border: 1px solid rgba(45, 226, 255, 0.35);
   border-radius: 8px;
-  font-size: 0.8rem;
+  font-size: 0.68rem;
   font-weight: 700;
 }
 
 .alumni-leader-info {
-  padding: 23px;
+  padding: 15px;
 }
 
 .alumni-leader-gender {
   color: #2de2ff;
-  font-size: 0.75rem;
+  font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 1.2px;
   text-transform: uppercase;
 }
 
 .alumni-leader-info h3 {
-  margin: 10px 0;
+  margin: 8px 0;
   color: #f3f6ff;
-  font-size: 1.3rem;
+  font-size: 1.05rem;
   line-height: 1.4;
 }
 
 .alumni-leader-branch {
   margin: 0;
   color: #aebcdb;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 .alumni-leader-tenure {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin-top: 20px;
-  padding-top: 16px;
+  gap: 7px;
+  margin-top: 13px;
+  padding-top: 11px;
   color: #d8e2ff;
   border-top: 1px solid rgba(255, 255, 255, 0.09);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .alumni-leader-tenure svg {
@@ -3635,7 +3671,7 @@ input {
   }
 
   .alumni-leader-photo {
-    height: 280px;
+    height: 140px;
   }
 }
 

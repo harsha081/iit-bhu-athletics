@@ -13,6 +13,7 @@ const leadershipRoutes = require("./routes/leadershipRoutes");
 const coachRoutes = require("./routes/coachRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
 const sportsFestRoutes = require("./routes/sportsFestRoutes");
+const missionCountdownRoutes = require("./routes/missionCountdownRoutes");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/leadership", leadershipRoutes);
 app.use("/api/coaches", coachRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/sports-fests", sportsFestRoutes);
+app.use("/api/mission-countdown", missionCountdownRoutes);
 
 // Database health check
 app.get("/api/health", async (req, res) => {

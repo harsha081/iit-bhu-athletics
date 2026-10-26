@@ -1,0 +1,84 @@
+.mission-countdown {
+  width: min(100%, 340px);
+  margin-top: 18px;
+  padding: 17px 15px 15px;
+  border: 1px solid rgba(56, 232, 255, 0.36);
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(13, 34, 79, 0.94), rgba(5, 15, 39, 0.96));
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.24), inset 0 1px rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+
+.mission-countdown-kicker {
+  color: #5ceeff;
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+}
+
+.mission-countdown h2 {
+  margin: 7px 0 5px;
+  color: #f5f8ff;
+  font-size: clamp(0.9rem, 1.6vw, 1.08rem);
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+}
+
+.mission-countdown-description {
+  margin: 0 auto 13px;
+  color: #aebfdf;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.mission-countdown-units {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.mission-countdown-unit {
+  min-width: 0;
+  padding: 9px 3px 7px;
+  border: 1px solid rgba(104, 148, 223, 0.32);
+  border-radius: 9px;
+  background: rgba(3, 14, 39, 0.58);
+}
+
+.mission-countdown-unit strong {
+  display: block;
+  color: #ffffff;
+  font-size: clamp(1.05rem, 2.2vw, 1.4rem);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.mission-countdown-unit span {
+  display: block;
+  margin-top: 5px;
+  color: #75e8f7;
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.mission-countdown-status {
+  margin: 13px 0 1px;
+  color: #63f3cb;
+  font-size: 0.78rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mission-countdown { animation: mission-countdown-arrive 600ms ease-out both; }
+}
+
+@keyframes mission-countdown-arrive {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 700px) {
+  .mission-countdown { width: min(100%, 390px); margin: 16px auto 0; }
+}

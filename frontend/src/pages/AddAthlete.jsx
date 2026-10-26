@@ -263,8 +263,9 @@ export default function AddAthlete() {
           value={form.gender}
           onChange={handleChange}
         >
-          <option value="M">Men</option>
-          <option value="F">Women</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+          <option value="F">Others</option>
         </select>
 
         <label htmlFor="branch">Branch</label>

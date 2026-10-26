@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 
 import { getCoaches } from "../api/coaches";
+import { getMediaUrl } from "../utils/mediaUrl";
 
 export default function Coaches() {
   const [coaches, setCoaches] = useState([]);
@@ -155,7 +156,7 @@ export default function Coaches() {
                 <div className="public-coach-photo">
                   {coach.photo_url ? (
                     <img
-                      src={coach.photo_url}
+                      src={getMediaUrl(coach.photo_url)}
                       alt={coach.name}
                       loading="lazy"
                     />

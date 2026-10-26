@@ -4,6 +4,7 @@ import Navbar from "./components/navbar";
 import Home from "./pages/Home";
 import Athletes from "./pages/Athletes";
 import Events from "./pages/Events";
+import SportsMeets from "./pages/SportsMeets";
 import Alumni from "./pages/Alumni";
 import AlumniLeadership from "./pages/AlumniLeadership";
 
@@ -19,6 +20,7 @@ import CoachesManagement from "./pages/CoachesManagement";
 import Coaches from "./pages/Coaches";
 
 import AnnouncementsManagement from "./pages/AnnouncementsManagement";
+import MissionCountdownManagement from "./pages/MissionCountdownManagement";
 import Updates from "./pages/Updates";
 import ScrollToTop from "./components/ScrollToTop";
 
@@ -33,6 +35,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/athletes" element={<Athletes />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/sports-meets" element={<SportsMeets />} />
         <Route path="/alumni" element={<Alumni />} />
         <Route
           path="/alumni-leadership"
@@ -71,6 +74,10 @@ function App() {
         <Route
           path="/admin/announcements"
           element={<AnnouncementsManagement />}
+        />
+        <Route
+          path="/admin/mission-countdown"
+          element={<MissionCountdownManagement />}
         />
 
         {/* Redirect unknown routes */}

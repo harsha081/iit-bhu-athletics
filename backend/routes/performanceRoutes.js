@@ -17,6 +17,7 @@ router.get("/", async (req, res) => {
         p.position,
         a.id AS athlete_id,
         a.name AS athlete_name,
+        a.gender AS athlete_gender,
         e.id AS event_id,
         e.name AS event_name,
         e.category AS event_category,

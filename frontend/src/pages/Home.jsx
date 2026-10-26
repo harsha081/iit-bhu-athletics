@@ -16,6 +16,8 @@ import { getAthletes } from "../api/athletes";
 import { getLeadership } from "../api/leadership";
 import { getAnnouncements } from "../api/announcements";
 import { getCoaches } from "../api/coaches";
+import MissionCountdown from "../components/MissionCountdown";
+import { getMediaUrl } from "../utils/mediaUrl";
 
 export default function Home() {
   const [athletes, setAthletes] = useState([]);
@@ -382,6 +384,7 @@ export default function Home() {
             alt="IIT (BHU) Varanasi Athletics logo"
             fetchPriority="high"
           />
+          <MissionCountdown />
         </div>
       </section>
 
@@ -497,7 +500,7 @@ export default function Home() {
                     >
                       <div className="home-leader-compact-photo">
                         {leader?.photo_url ? (
-                          <img src={leader.photo_url} alt={getLeaderName(leader)} loading="lazy" />
+                          <img src={getMediaUrl(leader.photo_url)} alt={getLeaderName(leader)} loading="lazy" />
                         ) : (
                           <UserRound size={30} strokeWidth={1.2} />
                         )}
@@ -551,7 +554,7 @@ export default function Home() {
                   <article className="home-coach-compact-card" key={coach.id}>
                     <div className="home-coach-compact-photo">
                       {coach.photo_url ? (
-                        <img src={coach.photo_url} alt={coach.name} loading="lazy" />
+                        <img src={getMediaUrl(coach.photo_url)} alt={coach.name} loading="lazy" />
                       ) : (
                         <UserRound size={30} strokeWidth={1.2} />
                       )}
@@ -598,7 +601,7 @@ export default function Home() {
                     <span className="home-medalist-rank">{String(index + 1).padStart(2, "0")}</span>
                     <div className="home-medalist-photo">
                       {medalist.photo_url ? (
-                        <img src={medalist.photo_url} alt={medalist.name} loading="lazy" />
+                        <img src={getMediaUrl(medalist.photo_url)} alt={medalist.name} loading="lazy" />
                       ) : (
                         <span>{medalist.name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase()}</span>
                       )}

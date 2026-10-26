@@ -66,8 +66,9 @@
 }
 
 .hero-decoration {
-  flex: 0 0 clamp(200px, 22vw, 270px);
+  flex: 0 0 clamp(270px, 28vw, 350px);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   opacity: 1;
@@ -612,7 +613,7 @@
 /* Responsive home layout */
 @media (max-width: 900px) {
   .hero-decoration {
-    flex-basis: clamp(170px, 24vw, 220px);
+    flex-basis: clamp(250px, 30vw, 300px);
   }
 
   .hero-athletics-logo {
@@ -621,8 +622,9 @@
 }
 
 @media (max-width: 700px) {
-  .hero { padding: 55px 24px; min-height: 420px; }
-  .hero-decoration { display: none; }
+  .hero { flex-direction: column; padding: 55px 24px; min-height: 420px; }
+  .hero-decoration { display: flex; flex-basis: min(100%, 390px); width: 100%; }
+  .hero-athletics-logo { width: min(180px, 45vw); }
   .stats { grid-template-columns: 1fr; }
 }
 
