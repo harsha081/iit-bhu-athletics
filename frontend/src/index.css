@@ -45,6 +45,64 @@ input {
   background: #050b1feF;
 }
 
+.navigation-panel,
+.navbar nav {
+  display: flex;
+  align-items: center;
+}
+
+.navigation-panel {
+  justify-content: space-between;
+  flex: 1;
+  gap: 24px;
+}
+
+.navbar nav {
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #31539b;
+  border-radius: 10px;
+  background: #0a1430;
+  color: #38e8ff;
+  cursor: pointer;
+}
+
+.mobile-menu-toggle:hover,
+.mobile-menu-toggle:focus-visible {
+  border-color: #38e8ff;
+  background: rgba(56, 232, 255, 0.12);
+}
+
+@media (min-width: 701px) {
+  .navbar {
+    position: relative;
+    flex-wrap: nowrap;
+  }
+
+  .navigation-panel {
+    display: contents;
+  }
+
+  .navbar nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-wrap: nowrap;
+  }
+
+  .navbar-actions {
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -388,17 +446,60 @@ input {
 
 @media (max-width: 700px) {
   .navbar {
-    justify-content: center;
+    min-height: 70px;
+    padding: 14px 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .brand {
+    flex-shrink: 0;
+  }
+
+  .mobile-menu-toggle {
+    display: grid;
+    margin-left: auto;
+  }
+
+  .navigation-panel {
+    display: none;
+    flex: 0 0 100%;
+    order: 3;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 18px 0 4px;
+    border-top: 1px solid #1f3a8a;
+  }
+
+  .navigation-panel.is-open {
+    display: flex;
   }
 
   .navbar nav {
-    order: 3;
     width: 100%;
-    justify-content: center;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .nav-link {
+    width: 100%;
+    display: block;
+    padding: 12px 14px;
   }
 
   .navbar-actions {
-    order: 2;
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px solid #1f3a8a;
+  }
+
+  .admin-link {
+    flex: 1;
+    text-align: center;
   }
 
   .hero {
@@ -1837,7 +1938,7 @@ input {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .coaches-hero {
     padding: 42px 20px 32px;
   }
@@ -3391,28 +3492,44 @@ input {
 .alumni-leadership-content {
   max-width: 1100px;
   margin: 0 auto;
-  padding-top: 70px;
-  padding-bottom: 90px;
+  padding-top: 56px;
+  padding-bottom: 70px;
+}
+
+.alumni-leadership-content .home-section-heading {
+  max-width: 680px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.alumni-leadership-content .home-section-heading h2 {
+  margin: 10px 0;
+  font-size: clamp(1.7rem, 3vw, 2.25rem);
+}
+
+.alumni-leadership-content .home-section-heading p {
+  margin: 0;
+  font-size: 0.95rem;
 }
 
 .alumni-leadership-filters {
   display: flex;
   flex-wrap: wrap;
-  align-items: start;
-  gap: 18px;
-  margin: 36px 0 30px;
-  padding: 22px;
+  align-items: end;
+  gap: 14px;
+  margin: 24px 0 24px;
+  padding: 16px;
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .alumni-filter-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  min-width: 200px;
-  flex: 1;
+  gap: 7px;
+  min-width: 220px;
+  flex: 0 1 260px;
 }
 
 .alumni-filter-group > span {
@@ -3430,8 +3547,8 @@ input {
 
 .alumni-filter-group select {
   width: 100%;
-  min-height: 46px;
-  padding: 0 14px;
+  min-height: 42px;
+  padding: 0 12px;
   color: #e8eeff;
   background: #101c3b;
   border: 1px solid rgba(45, 226, 255, 0.25);
@@ -3455,15 +3572,15 @@ input {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 46px;
-  padding: 0 12px;
+  min-height: 42px;
+  padding: 0 8px;
   color: #2de2ff;
   font-size: 0.88rem;
   white-space: nowrap;
 }
 
 .alumni-leadership-results {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
   color: #b8c6e8;
   font-size: 0.95rem;
 }
@@ -3637,7 +3754,7 @@ input {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 700px) {
   .alumni-leadership-hero {
     min-height: auto;
     padding: 55px 22px;
@@ -3666,12 +3783,60 @@ input {
   }
 
   .alumni-leadership-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
   .alumni-leader-photo {
-    height: 140px;
+    height: 108px;
+  }
+
+  .alumni-leader-photo > svg {
+    width: 38px;
+    height: 38px;
+  }
+
+  .alumni-leader-rank {
+    left: 7px;
+    bottom: 7px;
+    gap: 4px;
+    padding: 4px 6px;
+    font-size: 0.58rem;
+  }
+
+  .alumni-leader-rank svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .alumni-leader-info {
+    padding: 12px;
+  }
+
+  .alumni-leader-gender {
+    font-size: 0.56rem;
+    letter-spacing: 0.8px;
+  }
+
+  .alumni-leader-info h3 {
+    margin: 6px 0;
+    font-size: 0.92rem;
+  }
+
+  .alumni-leader-branch,
+  .alumni-leader-tenure {
+    font-size: 0.72rem;
+  }
+
+  .alumni-leader-tenure {
+    gap: 5px;
+    margin-top: 9px;
+    padding-top: 8px;
+  }
+
+  .alumni-leader-tenure svg {
+    width: 14px;
+    height: 14px;
   }
 }
 

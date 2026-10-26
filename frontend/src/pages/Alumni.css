@@ -17,6 +17,43 @@
   max-width: 100%;
 }
 
+.alumni-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(390px, 100%);
+  min-height: 44px;
+  margin-top: 28px;
+  padding: 0 13px;
+  border: 1px solid rgba(74, 112, 180, 0.58);
+  border-radius: 10px;
+  background: rgba(8, 20, 49, 0.68);
+  color: #72eafa;
+}
+
+.alumni-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f4f7ff;
+  font: inherit;
+}
+
+.alumni-search input::placeholder {
+  color: #8fa2c9;
+}
+
+.alumni-search:focus-within {
+  border-color: #38e8ff;
+  box-shadow: 0 0 0 3px rgba(56, 232, 255, 0.1);
+}
+
+.alumni-search-empty {
+  margin-top: 28px;
+}
+
 /* Tablets */
 @media (max-width: 900px) {
   .alumni-grid {
@@ -24,9 +61,67 @@
   }
 }
 
-/* Mobile phones */
-@media (max-width: 600px) {
+/* Phone and narrow-window layout: dense two-column alumni cards. */
+@media (max-width: 700px) {
+  .alumni-search {
+    width: 100%;
+    margin-top: 20px;
+  }
+
   .alumni-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .alumni-grid .athlete-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .alumni-grid .athlete-avatar {
+    flex: 0 0 108px;
+    min-height: 108px;
+    height: 108px;
+  }
+
+  .alumni-grid .athlete-avatar svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .alumni-grid .athlete-info {
+    padding: 12px;
+  }
+
+  .alumni-grid .athlete-info h3 {
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+  }
+
+  .alumni-grid .athlete-events {
+    margin-top: 12px;
+  }
+
+  .alumni-grid .athlete-events h4 {
+    margin-bottom: 7px;
+    font-size: 0.8rem;
+  }
+
+  .alumni-grid .athlete-event-badge {
+    padding: 4px 7px;
+    font-size: 0.7rem;
+  }
+
+  .alumni-grid .athlete-entry-year {
+    font-size: 0.78rem;
+  }
+
+  .alumni-grid .athlete-details-button {
+    width: 100%;
+    justify-content: center;
+    margin-top: 12px;
+    padding: 8px 6px;
+    font-size: 0.72rem;
   }
 }
