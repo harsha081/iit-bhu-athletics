@@ -1,22 +1,4 @@
-import axios from "axios";
-
-const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
-
-// Automatically attach the admin token to API requests.
-API.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("adminToken");
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+import API from "./client";
 
 // GET: Retrieve all athletes
 // GET: Retrieve athletes, optionally filtered by status

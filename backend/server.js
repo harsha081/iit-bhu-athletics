@@ -17,8 +17,23 @@ const missionCountdownRoutes = require("./routes/missionCountdownRoutes");
 
 const app = express();
 
+const allowedOrigins = (process.env.CORS_ORIGINS || "http://localhost:5173")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
 // Middleware
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Origin is not allowed by CORS"));
+    },
+  })
+);
 app.use(express.json());
 
 // Legacy support for existing athlete records. New uploads are disabled.
@@ -54,9 +69,14 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
+// Start a local server only when this file is run directly. Vercel imports the
+// exported app as a serverless function instead.
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

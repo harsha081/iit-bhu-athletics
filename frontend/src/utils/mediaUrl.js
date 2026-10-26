@@ -1,4 +1,6 @@
-const API_ORIGIN = "http://localhost:5000";
+import { API_BASE_URL } from "../api/client";
+
+const API_ORIGIN = API_BASE_URL.replace(/\/api\/?$/, "");
 
 // Uploaded files are stored by the API as paths such as /uploads/athletes/photo.jpg.
 // External image URLs are preserved unchanged.

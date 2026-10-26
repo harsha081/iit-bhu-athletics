@@ -1,37 +1,18 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/api/sports-fests";
-
-const getAuthConfig = () => {
-  const token = localStorage.getItem("adminToken");
-
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-};
+import API from "./client";
 
 export async function getSportsFests() {
-  const response = await axios.get(API_URL);
+  const response = await API.get("/sports-fests");
   return response.data;
 }
 
 export async function addSportsFest(festData) {
-  const response = await axios.post(
-    API_URL,
-    festData,
-    getAuthConfig()
-  );
+  const response = await API.post("/sports-fests", festData);
 
   return response.data;
 }
 
 export async function deleteSportsFest(id) {
-  const response = await axios.delete(
-    `${API_URL}/${id}`,
-    getAuthConfig()
-  );
+  const response = await API.delete(`/sports-fests/${id}`);
 
   return response.data;
 }

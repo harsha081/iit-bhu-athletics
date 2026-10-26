@@ -1,37 +1,18 @@
-import axios from "axios";
-
-const API_URL = "http://localhost:5000/api/performances";
-
-function getAuthConfig() {
-  const token = localStorage.getItem("adminToken");
-
-  return {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-}
+import API from "./client";
 
 export async function getPerformances() {
-  const response = await axios.get(API_URL);
+  const response = await API.get("/performances");
   return response.data;
 }
 
 export async function addPerformance(performanceData) {
-  const response = await axios.post(
-    API_URL,
-    performanceData,
-    getAuthConfig()
-  );
+  const response = await API.post("/performances", performanceData);
 
   return response.data;
 }
 
 export async function deletePerformance(id) {
-  const response = await axios.delete(
-    `${API_URL}/${id}`,
-    getAuthConfig()
-  );
+  const response = await API.delete(`/performances/${id}`);
 
   return response.data;
 }

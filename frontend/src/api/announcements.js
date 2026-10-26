@@ -1,19 +1,4 @@
-import axios from "axios";
-
-const API = axios.create({
-  baseURL: "http://localhost:5000/api",
-});
-
-// Attach the admin JWT token to requests.
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("adminToken");
-
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return config;
-});
+import API from "./client";
 
 // Fetch published announcements for the public Home page.
 export const getAnnouncements = async () => {
