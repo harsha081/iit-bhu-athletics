@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link, useParams } from "react-router-dom";
 import {
   addAthlete,
@@ -60,40 +60,7 @@ export default function AddAthlete() {
   const [saving, setSaving] = useState(false);
   const [loadingAthlete, setLoadingAthlete] = useState(isEditing);
 
-  const [photoFile, setPhotoFile] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState("");
-  const fileInputRef = useRef(null);
-
   const navigate = useNavigate();
-
-  function handlePhotoChange(event) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      setError("Please select a JPG, PNG, or WebP image.");
-      event.target.value = "";
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Image size must be less than 5 MB.");
-      event.target.value = "";
-      return;
-    }
-
-    setError("");
-    setPhotoFile(file);
-
-    const previewUrl = URL.createObjectURL(file);
-    setPhotoPreview((previousPreview) => {
-      if (previousPreview.startsWith("blob:")) {
-        URL.revokeObjectURL(previousPreview);
-      }
-      return previewUrl;
-    });
-  }
 
   // Load existing athlete when editing
   useEffect(() => {
@@ -184,20 +151,11 @@ export default function AddAthlete() {
     setSaving(true);
 
     try {
-      const athleteData = new FormData();
-      athleteData.append("name", form.name);
-      athleteData.append("gender", form.gender);
-      athleteData.append("branch", form.branch);
-      athleteData.append("entry_year", form.entry_year ? String(form.entry_year) : "");
-      athleteData.append("contact", form.contact);
-      athleteData.append("status", form.status);
-      athleteData.append("events", JSON.stringify(selectedEvents));
-
-      if (photoFile) {
-        athleteData.append("photo", photoFile);
-      } else {
-        athleteData.append("photo_url", form.photo_url || "");
-      }
+      const athleteData = {
+        ...form,
+        photo_url: form.photo_url.trim(),
+        events: selectedEvents,
+      };
 
       if (isEditing) {
         await updateAthlete(id, athleteData);
@@ -288,95 +246,29 @@ export default function AddAthlete() {
           onChange={handleChange}
         />
 
-        <label htmlFor="athlete_photo">Athlete Photo</label>
-
-<input
-  ref={fileInputRef}
-  id="athlete_photo"
-  type="file"
-  accept="image/jpeg,image/png,image/webp"
-  onChange={handlePhotoChange}
-/>
-
-{(photoPreview || form.photo_url) && (
-  <div className="athlete-photo-preview">
-    <img
-      src={
-        photoPreview ||
-        (form.photo_url.startsWith("http")
-          ? form.photo_url
-          : `http://localhost:5000${form.photo_url}`)
-      }
-      alt="Athlete preview"
-    />
-
-    {photoFile && (
-      <button
-        type="button"
-        onClick={() => {
-          if (photoPreview.startsWith("blob:")) {
-            URL.revokeObjectURL(photoPreview);
-          }
-
-          setPhotoPreview("");
-          setPhotoFile(null);
-
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
-        }}
-      >
-        Remove Selected Photo
-      </button>
-    )}
-  </div>
-)}
-
-<input
-  ref={fileInputRef}
-  id="athlete_photo"
-  type="file"
-  accept="image/jpeg,image/png,image/webp"
-  onChange={handlePhotoChange}
-/>
-
-{photoPreview && (
-  <div className="athlete-photo-preview">
-    <img
-      src={photoPreview}
-      alt="Selected athlete"
-    />
-
-    <button
-      type="button"
-      onClick={() => {
-        URL.revokeObjectURL(photoPreview);
-        setPhotoPreview("");
-        setPhotoFile(null);
-
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-      }}
-    >
-      Remove Photo
-    </button>
-  </div>
-)}
-
-{!photoFile && form.photo_url && (
-  <div className="athlete-photo-preview">
-    <img
-      src={form.photo_url.startsWith("http")
-        ? form.photo_url
-        : `http://localhost:5000${form.photo_url}`}
-      alt="Current athlete"
-      onError={(event) => {
-        event.currentTarget.style.display = "none";
-      }}
-    />
-  </div>
-)}
+        <label htmlFor="photo_url">Athlete Photo URL</label>
+        <input
+          id="photo_url"
+          name="photo_url"
+          type="url"
+          value={form.photo_url}
+          onChange={handleChange}
+          placeholder="https://images.example.com/athlete.jpg"
+        />
+        <p className="muted">
+          Paste a public HTTPS image URL from Cloudinary, ImageKit, or another image host.
+        </p>
+        {form.photo_url && (
+          <div className="athlete-photo-preview">
+            <img
+              src={form.photo_url}
+              alt="Athlete preview"
+              onError={(event) => {
+                event.currentTarget.style.display = "none";
+              }}
+            />
+          </div>
+        )}
 
         <label htmlFor="contact">Contact</label>
         <input

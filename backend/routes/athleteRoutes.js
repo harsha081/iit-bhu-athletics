@@ -1,60 +1,9 @@
 const express = require("express");
-const path = require("path");
-const fs = require("fs");
-const multer = require("multer");
 
 const pool = require("../config/db");
 const authenticateAdmin = require("../middleware/authMiddleware");
 
 const router = express.Router();
-
-// ============================================
-// ATHLETE PHOTO UPLOAD CONFIGURATION
-// ============================================
-
-const uploadDirectory = path.join(__dirname, "../uploads/athletes");
-
-fs.mkdirSync(uploadDirectory, { recursive: true });
-
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, uploadDirectory);
-  },
-
-  filename: (req, file, callback) => {
-    const extension = path.extname(file.originalname).toLowerCase();
-
-    const safeExtension = [".jpg", ".jpeg", ".png", ".webp"].includes(
-      extension
-    )
-      ? extension
-      : ".jpg";
-
-    const filename = `athlete-${Date.now()}-${Math.round(
-      Math.random() * 1e9
-    )}${safeExtension}`;
-
-    callback(null, filename);
-  },
-});
-
-const upload = multer({
-  storage,
-  limits: {
-    fileSize: 5 * 1024 * 1024,
-  },
-  fileFilter: (req, file, callback) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-
-    if (!allowedTypes.includes(file.mimetype)) {
-      return callback(
-        new Error("Only JPG, PNG, and WebP images are allowed.")
-      );
-    }
-
-    callback(null, true);
-  },
-});
 
 // ============================================
 // HELPER: PARSE EVENTS FROM JSON OR FORMDATA
@@ -81,6 +30,22 @@ function parseEvents(value) {
   }
 
   return [...new Set(value.map((event) => event.trim()))];
+}
+
+function parsePhotoUrl(value) {
+  if (value === undefined || value === null || value === "") return null;
+
+  if (typeof value !== "string") {
+    throw new Error("Photo URL must be a valid HTTPS URL.");
+  }
+
+  try {
+    const url = new URL(value.trim());
+    if (url.protocol !== "https:") throw new Error();
+    return url.href;
+  } catch {
+    throw new Error("Photo URL must be a valid HTTPS URL.");
+  }
 }
 
 // ============================================
@@ -182,7 +147,7 @@ router.get("/:id", async (req, res) => {
 // POST: CREATE ATHLETE
 // ============================================
 
-router.post("/", authenticateAdmin, upload.single("photo"), async (req, res) => {
+router.post("/", authenticateAdmin, async (req, res) => {
   let client;
 
   try {
@@ -218,9 +183,12 @@ router.post("/", authenticateAdmin, upload.single("photo"), async (req, res) => 
       });
     }
 
-    const finalPhotoUrl = req.file
-      ? `/uploads/athletes/${req.file.filename}`
-      : photo_url || null;
+    let finalPhotoUrl;
+    try {
+      finalPhotoUrl = parsePhotoUrl(photo_url);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
 
     client = await pool.connect();
 
@@ -308,7 +276,6 @@ router.post("/", authenticateAdmin, upload.single("photo"), async (req, res) => 
 router.put(
   "/:id",
   authenticateAdmin,
-  upload.single("photo"),
   async (req, res) => {
     let client;
 
@@ -353,7 +320,7 @@ router.put(
 
       await client.query("BEGIN");
 
-      // Preserve the current photo if no new photo or photo_url is supplied.
+      // Preserve the current photo if photo_url was omitted.
       const existing = await client.query(
         "SELECT photo_url FROM athletes WHERE id = $1",
         [req.params.id]
@@ -367,11 +334,15 @@ router.put(
         });
       }
 
-      const finalPhotoUrl = req.file
-        ? `/uploads/athletes/${req.file.filename}`
-        : photo_url !== undefined
-          ? photo_url || null
-          : existing.rows[0].photo_url;
+      let finalPhotoUrl = existing.rows[0].photo_url;
+      if (photo_url !== undefined) {
+        try {
+          finalPhotoUrl = parsePhotoUrl(photo_url);
+        } catch (error) {
+          await client.query("ROLLBACK");
+          return res.status(400).json({ message: error.message });
+        }
+      }
 
       let eventResult = { rows: [] };
 

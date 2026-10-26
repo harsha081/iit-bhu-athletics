@@ -21,7 +21,7 @@ const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-// Serve uploaded athlete photos
+// Legacy support for existing athlete records. New uploads are disabled.
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API routes
