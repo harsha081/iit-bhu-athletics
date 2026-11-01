@@ -12,9 +12,9 @@ import {
   ArrowRight,
 } from "lucide-react";
 import "./Events.css";
+import { API_BASE_URL } from "../api/client";
+import { getMediaUrl } from "../utils/mediaUrl";
 
-const API_BASE_URL = "http://localhost:5000/api";
-const API_ORIGIN = "http://localhost:5000";
 
 export default function Events() {
   const [events, setEvents] = useState([]);
@@ -199,9 +199,7 @@ export default function Events() {
   }
 
   function resolvePhotoUrl(photoUrl) {
-    if (!photoUrl) return "";
-    if (/^https?:\/\//i.test(photoUrl)) return photoUrl;
-    return `${API_ORIGIN}${photoUrl.startsWith("/") ? "" : "/"}${photoUrl}`;
+    return getMediaUrl(photoUrl);
   }
 
   // Read the result field used by the table and ignore missing/invalid results.

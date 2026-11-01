@@ -16,6 +16,7 @@ import {
   addPerformance,
   deletePerformance,
 } from "../api/performances";
+import { API_BASE_URL } from "../api/client";
 
 const initialForm = {
   athlete_id: "",
@@ -58,9 +59,7 @@ export default function PerformanceManagement() {
 
       // Events are loaded separately because the athlete API
       // returns assigned events rather than the full event list.
-      const response = await fetch(
-        "http://localhost:5000/api/events"
-      );
+      const response = await fetch(`${API_BASE_URL}/events`);
 
       if (!response.ok) {
         throw new Error("Unable to load events.");

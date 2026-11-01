@@ -16,6 +16,7 @@ import { getAthletes } from "../api/athletes";
 import { getLeadership } from "../api/leadership";
 import { getAnnouncements } from "../api/announcements";
 import { getCoaches } from "../api/coaches";
+import api from "../api/client";
 import MissionCountdown from "../components/MissionCountdown";
 import { getMediaUrl } from "../utils/mediaUrl";
 
@@ -42,15 +43,7 @@ export default function Home() {
           getAthletes("Active"),
           getLeadership(),
 
-          fetch("http://localhost:5000/api/performances").then(
-            (response) => {
-              if (!response.ok) {
-                throw new Error("Failed to fetch performances");
-              }
-
-              return response.json();
-            }
-          ),
+          api.get("/performances").then((response) => response.data),
 
           getAnnouncements(),
           getCoaches("active"),
