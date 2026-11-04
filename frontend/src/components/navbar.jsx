@@ -10,6 +10,7 @@ const links = [
   { name: "Alumni", path: "/alumni" },
   { name: "Alumni Captains", path: "/alumni-leadership" },
   { name: "Coaches", path: "/coaches" },
+  { name: "AIAssistant", path: "/ai-assistant" },
 ];
 
 export default function Navbar() {

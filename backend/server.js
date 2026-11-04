@@ -6,6 +6,7 @@ const cors = require("cors");
 const pool = require("./config/db");
 
 const athleteRoutes = require("./routes/athleteRoutes");
+const assistantRoutes = require("./routes/assistantRoutes");
 const authRoutes = require("./routes/authRoutes");
 const performanceRoutes = require("./routes/performanceRoutes");
 const eventRoutes = require("./routes/eventRoutes");
@@ -41,6 +42,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/assistant", assistantRoutes);
 app.use("/api/athletes", athleteRoutes);
 app.use("/api/performances", performanceRoutes);
 app.use("/api/events", eventRoutes);

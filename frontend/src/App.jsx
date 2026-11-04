@@ -23,6 +23,7 @@ import AnnouncementsManagement from "./pages/AnnouncementsManagement";
 import MissionCountdownManagement from "./pages/MissionCountdownManagement";
 import Updates from "./pages/Updates";
 import ScrollToTop from "./components/ScrollToTop";
+import AIAssistant from "./pages/AIAssistant";
 
 function App() {
   return (
@@ -79,6 +80,7 @@ function App() {
           path="/admin/mission-countdown"
           element={<MissionCountdownManagement />}
         />
+        <Route path="/ai-assistant" element={<AIAssistant />} />
 
         {/* Redirect unknown routes */}
         <Route path="*" element={<Navigate to="/" replace />} />
